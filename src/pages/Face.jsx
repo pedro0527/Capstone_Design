@@ -1,9 +1,8 @@
-import "../src/App.css";
+import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import person from "./assets/person_white.svg";
 
-function App() {
+export const Face = () => {
   const [clock, setClock] = useState(getNowTime());
   const [weather, setWeather] = useState(null);
 
@@ -75,16 +74,13 @@ function App() {
           </WeatherBox>
         )}
       </Container>
-      <ImgWrapper>
-        <Image src={person}></Image>
-      </ImgWrapper>
+      <Text>
+        <span>정면을 바라봐주세요!</span>
+      </Text>
     </Wrapper>
   );
-}
+};
 
-export default App;
-
-// 스타일 컴포넌트
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
@@ -157,13 +153,15 @@ const Range = styled.div`
 
 const Humidity = styled.div``;
 
-const ImgWrapper = styled.div`
+const Text = styled.div`
   display: flex;
   justify-content: center;
   width: 88vw;
-`;
 
-const Image = styled.img`
-  width: 500px;
-  color: white;
+  span {
+    color: red;
+    font-weight: 700;
+    font-family: sans-serif;
+    font-size: 36px;
+  }
 `;

@@ -1,9 +1,8 @@
-import "../src/App.css";
+import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import person from "./assets/person_white.svg";
 
-function App() {
+export const Result = () => {
   const [clock, setClock] = useState(getNowTime());
   const [weather, setWeather] = useState(null);
 
@@ -75,16 +74,27 @@ function App() {
           </WeatherBox>
         )}
       </Container>
-      <ImgWrapper>
-        <Image src={person}></Image>
-      </ImgWrapper>
+      <ResultWrapper>
+        <ResultText>최종결과</ResultText>
+        <Table>
+          <Face>
+            <Text>얼굴 비대칭</Text>
+            <Text>O</Text>
+          </Face>
+          <Arm>
+            <Text>팔 비대칭</Text>
+            <Text>X</Text>
+          </Arm>
+          <Voice>
+            <Text>말 어눌함</Text>
+            <Text>O</Text>
+          </Voice>
+        </Table>
+      </ResultWrapper>
     </Wrapper>
   );
-}
+};
 
-export default App;
-
-// 스타일 컴포넌트
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
@@ -157,13 +167,57 @@ const Range = styled.div`
 
 const Humidity = styled.div``;
 
-const ImgWrapper = styled.div`
+const ResultWrapper = styled.section`
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ResultText = styled.div`
   display: flex;
   justify-content: center;
   width: 88vw;
+  color: red;
+  font-size: 36px;
+  font-weight: 800;
+  font-family: sans-serif;
+  margin-bottom: 20px;
 `;
 
-const Image = styled.img`
-  width: 500px;
+const Table = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+`;
+
+const Face = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 33%;
+  padding: 10px;
+`;
+
+const Arm = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 33%;
+  padding: 10px;
+`;
+
+const Voice = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 33%;
+  padding: 10px;
+`;
+
+const Text = styled.div`
   color: white;
+  font-size: 24px;
+  font-weight: 500;
+  font-family: sans-serif;
+  border: 1px solid white;
+  padding: 10px;
 `;
