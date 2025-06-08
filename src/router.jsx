@@ -1,13 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "./App";
+import Home from "./pages/Home";
 import { Face } from "./pages/Face";
 import { Arm } from "./pages/Arm";
+import { Voice } from "./pages/Voice";
 import { Result } from "./pages/Result";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Home />,
   },
   {
     path: "/face",
@@ -16,6 +17,10 @@ export const router = createBrowserRouter([
   {
     path: "/arm",
     element: <Arm />,
+  },
+  {
+    path: "/voice",
+    element: <Voice />,
   },
   {
     path: "/result",

@@ -1,15 +1,11 @@
-import React from "react";
+import "../App.css";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { WebSocketManager } from "../ws/WebSocketManager";
+import person from "../assets/person_white.svg";
 
-export const Result = () => {
+function Home() {
   const [clock, setClock] = useState(getNowTime());
   const [weather, setWeather] = useState(null);
-  const [faceResult, setFaceResult] = useState(null);
-  const [armResult, setArmResult] = useState(null);
-  const [voiceResult, setVoiceResult] = useState(null);
-  const [finalResult, setFinalResult] = useState(null);
 
   function getNowTime() {
     const now = new Date();
@@ -18,15 +14,6 @@ export const Result = () => {
     const second = String(now.getSeconds()).padStart(2, "0");
     return `${hour} : ${minute} : ${second}`;
   }
-
-  useEffect(() => {
-    WebSocketManager.onMessage((data) => {
-      if (data.type === "face") setFaceResult(data.value);
-      if (data.type === "arm") setArmResult(data.value);
-      if (data.type === "voice") setVoiceResult(data.value);
-      if (data.type === "final") setFinalResult(data.value);
-    });
-  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -88,52 +75,16 @@ export const Result = () => {
           </WeatherBox>
         )}
       </Container>
-      <ResultWrapper>
-        <ResultText>
-          최종 결과:{" "}
-          {finalResult === "abnormal"
-            ? "⚠️ 뇌졸중 의심"
-            : finalResult === "normal"
-            ? "✅ 정상"
-            : "⏳ 검사 중"}
-        </ResultText>
-        <Table>
-          <Face>
-            <Text>얼굴 비대칭</Text>
-            <Text>
-              {faceResult === "abnormal"
-                ? "O"
-                : faceResult === "normal"
-                ? "X"
-                : "-"}
-            </Text>
-          </Face>
-          <Arm>
-            <Text>팔 비대칭</Text>
-            <Text>
-              {armResult === "abnormal"
-                ? "O"
-                : armResult === "normal"
-                ? "X"
-                : "-"}
-            </Text>
-          </Arm>
-          <Voice>
-            <Text>말 어눌함</Text>
-            <Text>
-              {voiceResult === "abnormal"
-                ? "O"
-                : voiceResult === "normal"
-                ? "X"
-                : "-"}
-            </Text>
-          </Voice>
-        </Table>
-      </ResultWrapper>
+      <ImgWrapper>
+        <Image src={person}></Image>
+      </ImgWrapper>
     </Wrapper>
   );
-};
+}
 
+export default Home;
+
+// 스타일 컴포넌트
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
@@ -206,57 +157,13 @@ const Range = styled.div`
 
 const Humidity = styled.div``;
 
-const ResultWrapper = styled.section`
-  height: 30vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const ResultText = styled.div`
+const ImgWrapper = styled.div`
   display: flex;
   justify-content: center;
   width: 88vw;
-  color: red;
-  font-size: 36px;
-  font-weight: 800;
-  font-family: sans-serif;
-  margin-bottom: 20px;
 `;
 
-const Table = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: center;
-`;
-
-const Face = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 33%;
-  padding: 10px;
-`;
-
-const Arm = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 33%;
-  padding: 10px;
-`;
-
-const Voice = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 33%;
-  padding: 10px;
-`;
-
-const Text = styled.div`
+const Image = styled.img`
+  width: 500px;
   color: white;
-  font-size: 24px;
-  font-weight: 500;
-  font-family: sans-serif;
-  border: 1px solid white;
-  padding: 10px;
 `;

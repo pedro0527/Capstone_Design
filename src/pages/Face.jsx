@@ -1,10 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { WebSocketManager } from "../ws/WebSocketManager";
 
 export const Face = () => {
   const [clock, setClock] = useState(getNowTime());
   const [weather, setWeather] = useState(null);
+  const navigate = useNavigate();
+  const [faceStatus, setFaceStatus] = useState("unknown");
 
   function getNowTime() {
     const now = new Date();
@@ -13,6 +17,23 @@ export const Face = () => {
     const second = String(now.getSeconds()).padStart(2, "0");
     return `${hour} : ${minute} : ${second}`;
   }
+
+  useEffect(() => {
+    WebSocketManager.connect();
+
+    WebSocketManager.onMessage((data) => {
+      // console.log("[WebSocket 메시지 수신]", data);
+      if (data.type === "face") {
+        if (data.value === "abnormal" || data.value === "normal") {
+          setFaceStatus(data.value);
+        }
+      }
+
+      if (data.type === "face" && data.value === "abnormal") {
+        setTimeout(() => navigate("/arm"), 1000);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -75,7 +96,13 @@ export const Face = () => {
         )}
       </Container>
       <Text>
-        <span>정면을 바라봐주세요!</span>
+        {faceStatus === "abnormal" ? (
+          <span>얼굴에 비대칭이 감지되었습니다!</span>
+        ) : faceStatus === "normal" ? (
+          <span>얼굴이 정상이에요.</span>
+        ) : (
+          <span>정면을 바라봐주세요!</span>
+        )}
       </Text>
     </Wrapper>
   );

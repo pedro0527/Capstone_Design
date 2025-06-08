@@ -1,10 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { WebSocketManager } from "../ws/WebSocketManager";
+import { useNavigate } from "react-router-dom";
 
 export const Arm = () => {
   const [clock, setClock] = useState(getNowTime());
   const [weather, setWeather] = useState(null);
+  const navigate = useNavigate();
+  const [armStatus, setArmStatus] = useState("unknown");
 
   function getNowTime() {
     const now = new Date();
@@ -13,6 +17,17 @@ export const Arm = () => {
     const second = String(now.getSeconds()).padStart(2, "0");
     return `${hour} : ${minute} : ${second}`;
   }
+
+  useEffect(() => {
+    WebSocketManager.connect();
+
+    WebSocketManager.onMessage((data) => {
+      console.log(data);
+      if (data.type === "arm") {
+        setTimeout(() => navigate("/voice"), 1000);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -75,11 +90,25 @@ export const Arm = () => {
         )}
       </Container>
       <Text>
-        <span>
-          얼굴 비대칭이 감지되었습니다.
-          <br></br>
-          양팔이 모두 화면에 나오게 들어주세요.
-        </span>
+        {armStatus === "abnormal" ? (
+          <span>
+            얼굴 비대칭이 감지되었습니다.
+            <br />
+            양팔의 움직임에도 이상이 있습니다.
+          </span>
+        ) : armStatus === "normal" ? (
+          <span>
+            얼굴 비대칭이 감지되었습니다.
+            <br />
+            양팔의 움직임은 정상입니다.
+          </span>
+        ) : (
+          <span>
+            얼굴 비대칭이 감지되었습니다.
+            <br />
+            양팔이 모두 화면에 나오게 들어주세요.
+          </span>
+        )}
       </Text>
     </Wrapper>
   );
