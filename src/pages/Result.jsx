@@ -2,14 +2,22 @@ import React from "react";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { WebSocketManager } from "../ws/WebSocketManager";
+import { useNavigate } from "react-router-dom";
 
 export const Result = () => {
   const [clock, setClock] = useState(getNowTime());
   const [weather, setWeather] = useState(null);
-  const [faceResult, setFaceResult] = useState(null);
-  const [armResult, setArmResult] = useState(null);
-  const [voiceResult, setVoiceResult] = useState(null);
+  const [faceResult, setFaceResult] = useState(() =>
+    localStorage.getItem("faceResult")
+  );
+  const [armResult, setArmResult] = useState(() =>
+    localStorage.getItem("armResult")
+  );
+  const [voiceResult, setVoiceResult] = useState(() =>
+    localStorage.getItem("voiceResult")
+  );
   const [finalResult, setFinalResult] = useState(null);
+  const navigate = useNavigate();
 
   function getNowTime() {
     const now = new Date();
@@ -20,13 +28,26 @@ export const Result = () => {
   }
 
   useEffect(() => {
-    WebSocketManager.onMessage((data) => {
-      if (data.type === "face") setFaceResult(data.value);
-      if (data.type === "arm") setArmResult(data.value);
-      if (data.type === "voice") setVoiceResult(data.value);
-      if (data.type === "final") setFinalResult(data.value);
-    });
+    WebSocketManager.connect();
+    const handler = (data) => {
+      console.log("[Result] incoming:", data);
+      if (data.type === "final") {
+        setFinalResult(data.value);
+      }
+    };
+    WebSocketManager.onMessage(handler);
+    return () => WebSocketManager.removeMessageHandler(handler);
   }, []);
+
+  useEffect(() => {
+    if (finalResult === "abnormal" || finalResult === "normal") {
+      const timer = setTimeout(() => {
+        WebSocketManager.disconnect();
+        navigate("/");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [finalResult, navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {

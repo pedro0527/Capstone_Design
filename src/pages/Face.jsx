@@ -20,20 +20,28 @@ export const Face = () => {
 
   useEffect(() => {
     WebSocketManager.connect();
+    const handler = (data) => {
+      console.log("[Face] 수신 데이터:", data);
 
-    WebSocketManager.onMessage((data) => {
-      // console.log("[WebSocket 메시지 수신]", data);
-      if (data.type === "face") {
-        if (data.value === "abnormal" || data.value === "normal") {
-          setFaceStatus(data.value);
-        }
-      }
+      if (data.type !== "face") return;
 
-      if (data.type === "face" && data.value === "abnormal") {
+      console.log("[Face] 얼굴 검사 결과:", data.value);
+
+      if (data.value === "abnormal") {
+        setFaceStatus(data.value);
+        localStorage.setItem("faceResult", "abnormal");
         setTimeout(() => navigate("/arm"), 1000);
+      } else if (data.value === "normal") {
+        setFaceStatus(data.value);
+        localStorage.setItem("faceResult", "normal");
+        setTimeout(() => navigate("/"), 1000);
       }
-    });
-  }, []);
+    };
+    WebSocketManager.onMessage(handler);
+    return () => {
+      WebSocketManager.removeMessageHandler(handler);
+    };
+  }, [navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {

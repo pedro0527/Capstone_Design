@@ -19,15 +19,18 @@ export const Voice = () => {
   }
 
   useEffect(() => {
-    WebSocketManager.onMessage((data) => {
-      if (data.type === "voice") {
-        if (data.value === "normal" || data.value === "abnormal") {
-          setVoiceStatus(data.value);
-        }
+    WebSocketManager.connect();
+    const handler = (data) => {
+      if (data.type !== "voice") return;
+      if (data.value === "abnormal" || data.value === "normal") {
+        setVoiceStatus(data.value);
+        localStorage.setItem("voiceResult", data.value);
         setTimeout(() => navigate("/result"), 1000);
       }
-    });
-  }, []);
+    };
+    WebSocketManager.onMessage(handler);
+    return () => WebSocketManager.removeMessageHandler(handler);
+  }, [navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {

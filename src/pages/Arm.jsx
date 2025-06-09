@@ -20,14 +20,19 @@ export const Arm = () => {
 
   useEffect(() => {
     WebSocketManager.connect();
-
-    WebSocketManager.onMessage((data) => {
-      console.log(data);
-      if (data.type === "arm") {
+    const handler = (data) => {
+      if (data.type !== "arm") return;
+      if (data.value === "abnormal" || data.value === "normal") {
+        setArmStatus(data.value);
+        localStorage.setItem("armResult", data.value);
         setTimeout(() => navigate("/voice"), 1000);
       }
-    });
-  }, []);
+    };
+    WebSocketManager.onMessage(handler);
+    return () => {
+      WebSocketManager.removeMessageHandler(handler);
+    };
+  }, [navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {

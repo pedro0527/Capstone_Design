@@ -1,11 +1,15 @@
 import "../App.css";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { WebSocketManager } from "../ws/WebSocketManager";
 import person from "../assets/person_white.svg";
 
 function Home() {
   const [clock, setClock] = useState(getNowTime());
   const [weather, setWeather] = useState(null);
+  const navigate = useNavigate();
+  const [hasNavigated, setHasNavigated] = useState(false);
 
   function getNowTime() {
     const now = new Date();
@@ -53,6 +57,25 @@ function Home() {
     }
   };
 
+  useEffect(() => {
+    WebSocketManager.connect();
+
+    const handler = (data) => {
+      if (data.type === "face" && !hasNavigated) {
+        if (data.value !== "failed to detect face") {
+          setHasNavigated(true);
+          navigate("/face");
+        }
+      }
+    };
+
+    WebSocketManager.onMessage(handler);
+
+    return () => {
+      WebSocketManager.removeMessageHandler(handler); // ✅ 언마운트 시 핸들러 제거
+    };
+  }, [hasNavigated]);
+
   return (
     <Wrapper>
       <Container>
@@ -84,7 +107,7 @@ function Home() {
 
 export default Home;
 
-// 스타일 컴포넌트
+// ✅ 스타일 컴포넌트
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;
