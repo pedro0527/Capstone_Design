@@ -21,7 +21,9 @@ export const Voice = () => {
   useEffect(() => {
     WebSocketManager.connect();
     const handler = (data) => {
+      console.log("[Voice] 수신 데이터:", data);
       if (data.type !== "voice") return;
+      console.log("[Voice] 음성 검사 결과:", data.value);
       if (data.value === "abnormal" || data.value === "normal") {
         setVoiceStatus(data.value);
         localStorage.setItem("voiceResult", data.value);

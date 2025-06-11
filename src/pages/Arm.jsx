@@ -21,7 +21,12 @@ export const Arm = () => {
   useEffect(() => {
     WebSocketManager.connect();
     const handler = (data) => {
+      console.log("[Arm] 수신 데이터:", data);
+
       if (data.type !== "arm") return;
+
+      console.log("[Arm] 팔 검사 결과:", data.value);
+
       if (data.value === "abnormal" || data.value === "normal") {
         setArmStatus(data.value);
         localStorage.setItem("armResult", data.value);

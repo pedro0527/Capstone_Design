@@ -23,7 +23,7 @@ export const Face = () => {
     const handler = (data) => {
       console.log("[Face] 수신 데이터:", data);
 
-      if (data.type !== "face") return;
+      if (data.type !== "face-final") return;
 
       console.log("[Face] 얼굴 검사 결과:", data.value);
 

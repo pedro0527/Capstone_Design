@@ -29,7 +29,10 @@ export const Result = () => {
 
   useEffect(() => {
     WebSocketManager.connect();
+    console.log("handler 전");
     const handler = (data) => {
+      console.log("handler 실행", data, typeof data, data && data.type);
+      console.log("[Result] 수신 데이터:", data);
       if (!data || typeof data !== "object") return;
 
       if (data.type === "final") {
