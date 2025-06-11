@@ -93,9 +93,11 @@ export const Voice = () => {
         )}
       </Container>
       <Text>
-        <span>다음 문장을 또박또박 말해주세요:</span>
-        <br />
-        <span>"안녕하세요 좋은 아침입니다"</span>
+        <span>
+          다음 문장을 또박또박 말해주세요:
+          <br></br>
+          "안녕하세요 좋은 아침입니다"
+        </span>
       </Text>
     </Wrapper>
   );
@@ -122,6 +124,7 @@ const Clock = styled.div`
   font-family: sans-serif;
   justify-content: center;
   align-items: center;
+  color: white;
 `;
 
 const WeatherBox = styled.div`
@@ -179,9 +182,9 @@ const Text = styled.div`
   width: 88vw;
 
   span {
-    color: red;
+    color: white;
     font-weight: 700;
     font-family: sans-serif;
-    font-size: 36px;
+    font-size: 45px;
   }
 `;

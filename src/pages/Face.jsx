@@ -137,6 +137,7 @@ const Clock = styled.div`
   font-family: sans-serif;
   justify-content: center;
   align-items: center;
+  color: white;
 `;
 
 const WeatherBox = styled.div`
@@ -194,9 +195,9 @@ const Text = styled.div`
   width: 88vw;
 
   span {
-    color: red;
+    color: white;
     font-weight: 700;
     font-family: sans-serif;
-    font-size: 36px;
+    font-size: 45px;
   }
 `;

@@ -132,6 +132,7 @@ const Clock = styled.div`
   font-family: sans-serif;
   justify-content: center;
   align-items: center;
+  color: white;
 `;
 
 const WeatherBox = styled.div`
