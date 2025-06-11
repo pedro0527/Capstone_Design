@@ -30,9 +30,20 @@ export const Result = () => {
   useEffect(() => {
     WebSocketManager.connect();
     const handler = (data) => {
-      console.log("[Result] incoming:", data);
+      if (!data || typeof data !== "object") return;
+
       if (data.type === "final") {
+        console.log("[Result] 최종 결과 수신:", data);
         setFinalResult(data.value);
+
+        const face = localStorage.getItem("faceResult");
+        const arm = localStorage.getItem("armResult");
+        const voice = localStorage.getItem("voiceResult");
+
+        console.log("🧠 진단 결과 요약:");
+        console.log(" - 얼굴 결과:", face);
+        console.log(" - 팔 결과:", arm);
+        console.log(" - 음성 결과:", voice);
       }
     };
     WebSocketManager.onMessage(handler);
@@ -43,6 +54,10 @@ export const Result = () => {
     if (finalResult === "abnormal" || finalResult === "normal") {
       const timer = setTimeout(() => {
         WebSocketManager.disconnect();
+        localStorage.removeItem("faceResult");
+        localStorage.removeItem("armResult");
+        localStorage.removeItem("voiceResult");
+        localStorage.removeItem("diagnosisStarted");
         navigate("/");
       }, 5000);
       return () => clearTimeout(timer);

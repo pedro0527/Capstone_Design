@@ -61,20 +61,23 @@ function Home() {
     WebSocketManager.connect();
 
     const handler = (data) => {
-      if (data.type === "face" && !hasNavigated) {
-        if (data.value !== "failed to detect face") {
-          setHasNavigated(true);
-          navigate("/face");
-        }
+      console.log("[Home] 수신 데이터:", data);
+
+      if (
+        data.type?.includes("face") &&
+        data.value !== "failed to detect face"
+      ) {
+        console.log("[Home] 얼굴 인식 → /face로 이동");
+        navigate("/face");
       }
     };
 
     WebSocketManager.onMessage(handler);
 
     return () => {
-      WebSocketManager.removeMessageHandler(handler); // ✅ 언마운트 시 핸들러 제거
+      WebSocketManager.removeMessageHandler(handler);
     };
-  }, [hasNavigated]);
+  }, []);
 
   return (
     <Wrapper>
